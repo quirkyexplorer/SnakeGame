@@ -8,7 +8,10 @@ let tileSize = 30// clientWidth returns the width of an element in pixels
 let headX = 300; // starting position of snake
 let headY = 300;
 
-
+// to draw the body of the snake
+let snake = [{x:300, y:300}, {x:270, y:300}, {x:240, y:300}]; 
+console.log(snake[0]);
+console.log(typeof(snake));
 // random range for apple to appear 
 min = 0;
 max = 600;
@@ -31,16 +34,20 @@ let score = 0;
 
 // create game loop-to continously update screen
 function drawGame() {
-    changeSnakePosition(); 
+
+    //changeSnakePosition();  // maybe we dont need this one here. 
     clearScreen();
+    drawApple(); 
     drawSnake();
-    drawApple(); // apple has to stay, it cant be redrawn everytime. 
-                // a helper function must update it once snake eats it. 
+    // drawBody();
+    
+    // history();
+    // apple has to stay, it cant be redrawn everytime. 
+    // a helper function must update it once snake eats it. 
     const time = setTimeout(drawGame, 1000/speed); // update screen 4 times a second
     gameOver(time);
     // console.log(getRandomInt(min, max));
 }
-
 
 function gameOver(time) {  // this function freezes the image when 
     // snake hits a wall 
@@ -52,8 +59,7 @@ function gameOver(time) {  // this function freezes the image when
 
 }
 
-
-function getRandomInt(min, max, tilesize) {
+function getRandomInt(min, max, tileSize) {
     return Math.floor(Math.random() * ((max - min) / tileSize)) * tileSize + min;// max is inclusive and min is inclusive
 }
 
@@ -62,41 +68,53 @@ function clearScreen() {
     ctx.fillRect(0,0, canvas.clientWidth, canvas.clientHeight); // this whole thing clears the screen
 }
 
-
 function drawSnake() {
     // ctx.clearRect();
-    ctx.fillStyle = "orange";
-    ctx.fillRect(headX, headY, tileSize, tileSize);
+    snake.forEach(changeSnakePosition); //updates the position for all parts. or so it should 
+    snake.forEach(drawSnakePart); //draws the actual snake
+    //console.log(drawSnakePart);
+     // this is a loop 
 }
 
+function changeSnakePosition(snakePart) {  // this one updates the snake position
+    snakePart.x = snakePart.x + xvelocity; // here we update headX and headY
+    snakePart.y = snakePart.y + yvelocity; // from here we have to actualize each snake part. 
+}
+
+function drawSnakePart(snakePart) {
+    ctx.fillStyle = "orange";
+    console.log( "from drawSnake","headX", headX, "headY", headY);
+    ctx.fillRect(snakePart.x, snakePart.y, tileSize, tileSize);
+    //console.log("snakePart from drawsnakePart", typeof(snakePart.x),snakePart.x);
+}
+
+// to draw the body of the snake 
+// function drawBody() {
+//     ctx.fillStyle = "orange";
+//     ctx.fillRect(270, 300, tileSize, tileSize);
+//     ctx.fillRect(240, 300, tileSize, tileSize);
+// }
+
+// function history() { // function to store head's previous position 
+//     //  previousPos = [headX, headY]; 
+//     //  console.log(previousPos);
+//     const history = {x: headX, y: headY};
+//     console.log("history:", history);
+// }
 
 function drawApple() {
-    
         // this.appleX = getRandomInt(min, max, tileSize);
         // this.appleY = getRandomInt(min, max, tileSize);
         ctx.fillStyle = "red";
         ctx.fillRect(appleX, appleY, tileSize, tileSize);
-}
+        if (headX == appleX && headY == appleY) {
+            // console.log("hit"); 
+            appleX = getRandomInt(min, max, tileSize);
+            appleY = getRandomInt(min, max, tileSize);
+            score += 5; // updates score if hit
+            console.log(score);
+                 };
 
-// function score_increment () {
-
-
-//     if (headX == appleX && headY == appleY) {
-        
-//     };
-
-// }
-
-function changeSnakePosition() {
-    headX = headX + xvelocity;
-    headY = headY + yvelocity;
-    console.log("headX", headX, "headY", headY);
-    if (headX == appleX && headY == appleY) {
-        console.log("hit");
-        appleX = getRandomInt(min, max, tileSize);
-        appleY = getRandomInt(min, max, tileSize);
-        console.log("appleX", appleX, "appleY", appleY);
-             };
 }
 
 window.addEventListener('keydown', keyDown, false);
@@ -110,33 +128,36 @@ function keyDown(e) {
             if (xvelocity == tileSize)
             return;
             yvelocity = 0;
-            xvelocity = -1 * tileSize;
+            xvelocity = -1 * tileSize; // go to the left
             //console.log("pressing left")
             break;
 
         case 38: // up 
             if (yvelocity == tileSize)
-            return; 
+            return;    
             yvelocity = -1 * tileSize;
             xvelocity = 0; 
+            snake[1].y += 30;
+            snake[2].y += 30;  
             break;
 
         case 39: // right
             if (xvelocity == -1 * tileSize)
-            return;
+            return;     
             xvelocity = tileSize;
             yvelocity = 0;
+            // snake[1].x += 30;
+            // snake[2].x += 30;
             break;
 
         case 40: // down
             if (yvelocity == -1 * tileSize)
-            return;
+            return;    
             xvelocity = 0;
             yvelocity = tileSize;
             break;
     }
 }
-
 
 drawGame();
 
