@@ -10,7 +10,7 @@ let headY = 300;
 
 // to draw the body of the snake
 let snake = [{x:300, y:300}, {x:270, y:300}, {x:240, y:300}]; 
-console.log(snake[0]);
+console.log(snake[0].x);
 console.log(typeof(snake));
 // random range for apple to appear 
 min = 0;
@@ -37,9 +37,10 @@ function drawGame() {
 
     //changeSnakePosition();  // maybe we dont need this one here. 
     clearScreen();
-    drawApple(); 
+    drawApple();
+    
+    changeSnakePosition();
     drawSnake();
-    // drawBody();
     
     // history();
     // apple has to stay, it cant be redrawn everytime. 
@@ -70,15 +71,20 @@ function clearScreen() {
 
 function drawSnake() {
     // ctx.clearRect();
-    snake.forEach(changeSnakePosition); //updates the position for all parts. or so it should 
+    //snake.forEach(changeSnakePosition); //updates the position for all parts. or so it should 
     snake.forEach(drawSnakePart); //draws the actual snake
     //console.log(drawSnakePart);
-     // this is a loop 
+    // this is a loop 
 }
 
-function changeSnakePosition(snakePart) {  // this one updates the snake position
-    snakePart.x = snakePart.x + xvelocity; // here we update headX and headY
-    snakePart.y = snakePart.y + yvelocity; // from here we have to actualize each snake part. 
+function changeSnakePosition() {  
+    const head = {x: snake[0].x + xvelocity, y: snake[0].y  + yvelocity};
+    snake.unshift(head);
+    snake.pop();
+    // / this one updates the snake position
+    // snakePart.x = snakePart.x + xvelocity; // here we update headX and headY
+    // snakePart.y = snakePart.y + yvelocity; // from here we have to actualize each snake part.
+
 }
 
 function drawSnakePart(snakePart) {
@@ -87,20 +93,6 @@ function drawSnakePart(snakePart) {
     ctx.fillRect(snakePart.x, snakePart.y, tileSize, tileSize);
     //console.log("snakePart from drawsnakePart", typeof(snakePart.x),snakePart.x);
 }
-
-// to draw the body of the snake 
-// function drawBody() {
-//     ctx.fillStyle = "orange";
-//     ctx.fillRect(270, 300, tileSize, tileSize);
-//     ctx.fillRect(240, 300, tileSize, tileSize);
-// }
-
-// function history() { // function to store head's previous position 
-//     //  previousPos = [headX, headY]; 
-//     //  console.log(previousPos);
-//     const history = {x: headX, y: headY};
-//     console.log("history:", history);
-// }
 
 function drawApple() {
         // this.appleX = getRandomInt(min, max, tileSize);
@@ -137,8 +129,6 @@ function keyDown(e) {
             return;    
             yvelocity = -1 * tileSize;
             xvelocity = 0; 
-            snake[1].y += 30;
-            snake[2].y += 30;  
             break;
 
         case 39: // right
@@ -146,8 +136,6 @@ function keyDown(e) {
             return;     
             xvelocity = tileSize;
             yvelocity = 0;
-            // snake[1].x += 30;
-            // snake[2].x += 30;
             break;
 
         case 40: // down
