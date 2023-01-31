@@ -1,6 +1,10 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+//const canvas2 = document.getElementById("score");  // for the score
+// const ctx2 = canvas2.getContext("2d");
+
+
 let speed = 4;
 let tileCount = 20; // number of preferred tiles
 let tileSize = 30// clientWidth returns the width of an element in pixels
@@ -8,18 +12,16 @@ let tileSize = 30// clientWidth returns the width of an element in pixels
 let headX = 300; // starting position of snake
 let headY = 300;
 
+// 
+let head = 0;
+
 // to draw the body of the snake
-let snake = [{x:300, y:300}, {x:270, y:300}, {x:240, y:300}]; 
-console.log(snake[0].x);
-console.log(typeof(snake));
+// array for snake parts
+let snake = [{x:300, y:300}, {x:270, y:300}, {x:240, y:300}]; // we need to call this to grow the snake or add parts
+
 // random range for apple to appear 
 min = 0;
 max = 600;
-
-// array for snake parts
-
-const snakeParts = [];
-let tailLength = 2;
 
 // initialize the speed of the snake
 let xvelocity = 0;
@@ -34,17 +36,14 @@ let score = 0;
 
 // create game loop-to continously update screen
 function drawGame() {
-
-    //changeSnakePosition();  // maybe we dont need this one here. 
+    
     clearScreen();
     drawApple();
     
     changeSnakePosition();
     drawSnake();
+    //displayScore();
     
-    // history();
-    // apple has to stay, it cant be redrawn everytime. 
-    // a helper function must update it once snake eats it. 
     const time = setTimeout(drawGame, 1000/speed); // update screen 4 times a second
     gameOver(time);
     // console.log(getRandomInt(min, max));
@@ -52,14 +51,18 @@ function drawGame() {
 
 function gameOver(time) {  // this function freezes the image when 
     // snake hits a wall 
-    if (headX + 60 > 600 || headX - 30 < 0 || headY + 60 >
-        600 || headY - 30 < 0) {
+    if (head.x + 60 > 630 || head.x - 30 < -30 || head.y + 60 >
+        630 || head.y - 30 < -30) {
+       
+       drawSnake();
        clearTimeout(time); // dont update if going
        // outside the bounds. freeze the image. 
     } 
 
 }
 
+
+// to draw the apple
 function getRandomInt(min, max, tileSize) {
     return Math.floor(Math.random() * ((max - min) / tileSize)) * tileSize + min;// max is inclusive and min is inclusive
 }
@@ -78,7 +81,7 @@ function drawSnake() {
 }
 
 function changeSnakePosition() {  
-    const head = {x: snake[0].x + xvelocity, y: snake[0].y  + yvelocity};
+    head = {x: snake[0].x + xvelocity, y: snake[0].y  + yvelocity};
     snake.unshift(head);
     snake.pop();
     // / this one updates the snake position
@@ -89,8 +92,10 @@ function changeSnakePosition() {
 
 function drawSnakePart(snakePart) {
     ctx.fillStyle = "orange";
-    console.log( "from drawSnake","headX", headX, "headY", headY);
+    //console.log( "from drawSnake","headX", headX, "headY", headY);
     ctx.fillRect(snakePart.x, snakePart.y, tileSize, tileSize);
+    ctx.strokeStyle = "black";
+    ctx.strokeRect(snakePart.x, snakePart.y, tileSize, tileSize);
     //console.log("snakePart from drawsnakePart", typeof(snakePart.x),snakePart.x);
 }
 
@@ -99,15 +104,24 @@ function drawApple() {
         // this.appleY = getRandomInt(min, max, tileSize);
         ctx.fillStyle = "red";
         ctx.fillRect(appleX, appleY, tileSize, tileSize);
-        if (headX == appleX && headY == appleY) {
+        if (head.x == appleX && head.y == appleY) {  // if it east the apple
             // console.log("hit"); 
             appleX = getRandomInt(min, max, tileSize);
             appleY = getRandomInt(min, max, tileSize);
+            newSegment = [snake[0]];
+            snake.push(newSegment);
+            snake.push(newSegment);
             score += 5; // updates score if hit
             console.log(score);
                  };
 
 }
+
+// we display the score here 
+// function displayScore() {
+//         ctx2.fillStyle = "white";
+//         ctx2.fillRect(-100, 100, clientWidth, clientHeight);
+// }
 
 window.addEventListener('keydown', keyDown, false);
 
