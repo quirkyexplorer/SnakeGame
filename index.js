@@ -1,38 +1,42 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-//const canvas2 = document.getElementById("score");  // for the score
-// const ctx2 = canvas2.getContext("2d");
+const canvas2 = document.getElementById("score");  // for the score
+const ctx2 = canvas2.getContext("2d");
 
-
+// setting up the snake features
 let speed = 4;
-let tileCount = 20; // number of preferred tiles
 let tileSize = 30// clientWidth returns the width of an element in pixels
 
-let headX = 300; // starting position of snake
-let headY = 300;
-
-// 
+// declaring the head of the snake
 let head = 0;
 
 // to draw the body of the snake
 // array for snake parts
 let snake = [{x:300, y:300}, {x:270, y:300}, {x:240, y:300}]; // we need to call this to grow the snake or add parts
-
-// random range for apple to appear 
-min = 0;
-max = 600;
-
 // initialize the speed of the snake
 let xvelocity = 0;
 let yvelocity = 0;
 
+// ------------------------------------------------------------------------
+
+// apple features 
+// random range for apple to appear 
+let min = 0;
+let max = 600;
 // draw apple = 5;
 let appleX = 30;
 let appleY = 30;
 
+// ------------------------------------------------------------------------
+
 // scores 
 let score = 0;
+
+// ------------------------------------------------------------------------
+// music features
+let music = new sound("cumbiaCity.mp3");
+let eatSound;
 
 // create game loop-to continously update screen
 function drawGame() {
@@ -42,7 +46,8 @@ function drawGame() {
     
     changeSnakePosition();
     drawSnake();
-    //displayScore();
+    music.play();
+    displayScore();
     
     const time = setTimeout(drawGame, 1000/speed); // update screen 4 times a second
     gameOver(time);
@@ -117,11 +122,66 @@ function drawApple() {
 
 }
 
+function sound(src) {
+        this.sound = document.createElement("audio");
+        this.sound.src = src;
+        this.sound.setAttribute("preload", "auto");
+        this.sound.setAttribute("controls", "none");
+        this.sound.style.display = "none";
+        document.body.appendChild(this.sound);
+        this.play = function() {
+            this.sound.play();
+        }
+        this.stop = function() {
+            this.sound.pause();
+        }
+}
+
 // we display the score here 
-// function displayScore() {
-//         ctx2.fillStyle = "white";
-//         ctx2.fillRect(-100, 100, clientWidth, clientHeight);
-// }
+function displayScore() {
+        ctx2.fillStyle = "white";
+        ctx2.fillRect(0, 0, 500, 100);
+
+        ctx2.fillStyle = "red";
+        ctx2.fillRect(0,0,2,2)
+
+        ctx2.font = "20px Comic Sans MS";
+        ctx2.fillStyle = "red";
+
+        ctx2.textAlign = "center";
+        ctx2.fillText("Score = " + score, 250, 100); // width and height where you want the text aligned. 
+        
+        if( score < 50) {
+            message = "baby snakes are called snakelets";
+            ctx2.font = "18px Comic Sans MS";
+            ctx2.textAlign = "center";
+            ctx2.fillText(message, 250, 50); 
+        } 
+        else if (score >= 50 && score < 100) {
+            message1 = "a reticulated python can measure up to";
+            message2 = "33 feet in length, thats five average adults";
+            message3 = "plus half of one laying down.";
+
+            ctx2.font = "18px Comic Sans MS";
+            ctx2.textAlign = "center";
+            ctx2.fillText(message1, 250, 15); 
+            ctx2.fillText(message2, 250, 35); 
+            ctx2.fillText(message3, 250, 55); 
+    
+        }
+        else if( score >= 100 && score < 130) {
+            message1 = "that snake is getting big, you should";
+            message2 = "be paying attention where it goes..."
+            ctx2.font = "18px Comic Sans MS";
+            ctx2.textAlign = "center";
+            ctx2.fillText(message1, 250, 15); 
+            ctx2.fillText(message2, 250, 35); 
+        }
+
+        
+
+}
+
 
 window.addEventListener('keydown', keyDown, false);
 
