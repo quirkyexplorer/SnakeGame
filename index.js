@@ -36,7 +36,7 @@ let score = 0;
 // ------------------------------------------------------------------------
 // music features
 let music = new sound("cumbiaCity.mp3");
-let eatSound;
+let eatSound = new sound("eating-sound.mp3"); // eating Sound Effect from <a href="https://pixabay.com/sound-effects/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=36186">Pixabay</a>
 
 // create game loop-to continously update screen
 function drawGame() {
@@ -61,7 +61,9 @@ function gameOver(time) {  // this function freezes the image when
        
        drawSnake();
        clearTimeout(time); // dont update if going
-       // outside the bounds. freeze the image. 
+                            // outside the bounds. freeze the image.
+                            
+       music.stop(); // stop the music 
     } 
 
 }
@@ -73,7 +75,7 @@ function getRandomInt(min, max, tileSize) {
 }
 
 function clearScreen() {
-    ctx.fillStyle = "lightblue"; // screen is blue
+    ctx.fillStyle = "darkgreen"; // screen is blue
     ctx.fillRect(0,0, canvas.clientWidth, canvas.clientHeight); // this whole thing clears the screen
 }
 
@@ -111,13 +113,14 @@ function drawApple() {
         ctx.fillRect(appleX, appleY, tileSize, tileSize);
         if (head.x == appleX && head.y == appleY) {  // if it east the apple
             // console.log("hit"); 
+            eatSound.play(); // play eating sound 
             appleX = getRandomInt(min, max, tileSize);
             appleY = getRandomInt(min, max, tileSize);
             newSegment = [snake[0]];
             snake.push(newSegment);
             snake.push(newSegment);
             score += 5; // updates score if hit
-            console.log(score);
+            //console.log(score);
                  };
 
 }
