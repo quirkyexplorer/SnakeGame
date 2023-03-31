@@ -1,3 +1,5 @@
+import { CallThis } from "./test";
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -41,17 +43,19 @@ let score = 0;
 
 // ------------------------------------------------------------------------
 // music features
+
 let music = new sound("cumbiaCity.mp3");
 let eatSound = new sound("eating-sound.mp3"); // eating Sound Effect from <a href="https://pixabay.com/sound-effects/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=36186">Pixabay</a>
 
 // create game loop-to continously update screen
 function drawGame() {
+  CallThis();
   clearScreen();
   drawApple();
 
   changeSnakePosition();
   drawSnake();
-  music.play();
+  music.play(); // -
   displayScore();
 
   const time = setTimeout(drawGame, 1000 / speed); // update screen 4 times a second
@@ -60,15 +64,16 @@ function drawGame() {
 }
 
 function gameOver(time) {
-  // this function freezes the image when
-  // snake hits a wall
-    flag = false;
+  // checking for body collisions
+  flag = false;
   body.filter((obj) => {
     if (obj.x == head.x && obj.y == head.y) {
-        flag = true;
+      flag = true;
     }
   });
 
+  // this function freezes the image when
+  // snake hits a wall
   if (
     head.x + 60 > 630 ||
     head.x - 30 < -30 ||
@@ -145,6 +150,7 @@ function drawApple() {
     //console.log(score);
   }
 }
+
 // this takes care of the sound
 function sound(src) {
   this.sound = document.createElement("audio");
@@ -232,6 +238,4 @@ function keyDown(e) {
   }
 }
 
-drawGame();
-
-0;
+drawGame(); // this is the main function that calls all the other functions
