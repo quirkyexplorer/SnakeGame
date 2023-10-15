@@ -49,7 +49,7 @@ let eatSound = new sound("eating-sound.mp3"); // eating Sound Effect from <a hre
 
 // create game loop-to continously update screen
 function drawGame() {
-  CallThis();
+//   CallThis();
   clearScreen();
   drawApple();
 
