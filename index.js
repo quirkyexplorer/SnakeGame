@@ -1,4 +1,5 @@
 // import { CallThis } from "./test";
+// adding a simple comment
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
